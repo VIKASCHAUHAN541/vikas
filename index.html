@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phul - My Lovely Sister</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:'Segoe UI', sans-serif;
+  background: linear-gradient(135deg,#ffdde1,#ee9ca7);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  perspective:1200px;
+  transition:0.5s;
+}
+
+.dark{
+  background: radial-gradient(circle,#1a1a2e,#000);
+}
+
+/* 3D Hearts */
+.heart3d{
+  position:absolute;
+  font-size:25px;
+  animation: float3d linear infinite;
+  transform-style:preserve-3d;
+  pointer-events:none;
+}
+
+@keyframes float3d{
+  from{
+    transform: translateZ(-300px) translateY(120vh) rotateX(0deg) rotateY(0deg);
+    opacity:1;
+  }
+  to{
+    transform: translateZ(300px) translateY(-120vh) rotateX(360deg) rotateY(360deg);
+    opacity:0;
+  }
+}
+
+/* Main Card */
+.card{
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(18px);
+  border-radius:35px;
+  padding:60px;
+  width:85%;
+  max-width:900px;
+  text-align:center;
+  box-shadow:0 0 50px rgba(0,0,0,0.3);
+  animation: fadeIn 2s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:scale(0.8);}
+  to{opacity:1; transform:scale(1);}
+}
+
+h1{
+  font-size:70px;
+  color:white;
+  text-shadow:0 0 20px hotpink;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 10px pink;}
+  to{text-shadow:0 0 40px deeppink;}
+}
+
+#text{
+  font-size:26px;
+  color:#333;
+  min-height:160px;
+  margin-top:20px;
+}
+
+.dark #text{color:#fff;}
+
+/* Buttons */
+button{
+  margin:15px;
+  padding:14px 35px;
+  font-size:20px;
+  border:none;
+  border-radius:40px;
+  background:linear-gradient(to right,hotpink,deeppink);
+  color:white;
+  cursor:pointer;
+  box-shadow:0 0 20px pink;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 30px red;
+}
+
+/* Fireworks */
+.fire{
+  position:absolute;
+  width:8px;
+  height:8px;
+  background:red;
+  border-radius:50%;
+  animation: explode 1s linear forwards;
+}
+
+@keyframes explode{
+  to{
+    transform: translate(var(--x), var(--y));
+    opacity:0;
+  }
+}
+
+/* Surprise Popup */
+#surpriseBox{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.surpriseContent{
+  background:white;
+  padding:40px;
+  border-radius:25px;
+  text-align:center;
+  animation: pop 0.6s ease;
+  box-shadow:0 0 30px hotpink;
+  max-width:400px;
+}
+
+@keyframes pop{
+  from{transform:scale(0);}
+  to{transform:scale(1);}
+}
+
+.surpriseContent h2{
+  color:hotpink;
+  font-size:32px;
+}
+
+.surpriseContent p{
+  font-size:20px;
+  color:#444;
+}
+
+.surpriseContent button{
+  margin-top:20px;
+  padding:10px 25px;
+  border:none;
+  border-radius:25px;
+  background:hotpink;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.surpriseContent button:hover{
+  background:red;
+}
+</style>
+</head>
+
+<body onclick="fireworks(event)">
+
+<div class="card">
+  <h1>💖 Phul 💖</h1>
+  <div id="text"></div>
+
+  <button onclick="surprise()">💌 Surprise</button>
+  <button onclick="toggleMode()">🌙 Dark / Light</button>
+</div>
+
+<!-- Surprise Popup -->
+<div id="surpriseBox">
+  <div class="surpriseContent">
+    <h2>💖 Dear Phul 💖</h2>
+    <p id="surpriseText"></p>
+    <button onclick="closeSurprise()">Close ❌</button>
+  </div>
+</div>
+
+<script>
+// Typing text
+const message = "You are the most beautiful flower in my life 🌸\nYour smile brings happiness to everyone 😊\nAlways stay joyful and keep shining ✨\nThis special website is made with pure love for you ❤️";
+let i=0;
+
+function typeText(){
+  if(i<message.length){
+    document.getElementById("text").innerHTML += message.charAt(i)=="\n"?"<br>":message.charAt(i);
+    i++;
+    setTimeout(typeText,60);
+  }
+}
+typeText();
+
+// 3D Hearts
+function createHeart3D(){
+  const heart=document.createElement("div");
+  heart.className="heart3d";
+  heart.innerHTML="❤️";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(Math.random()*30+20)+"px";
+  heart.style.animationDuration=(Math.random()*5+6)+"s";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),10000);
+}
+setInterval(createHeart3D,250);
+
+// Mouse follow hearts
+document.addEventListener("mousemove",function(e){
+  const h=document.createElement("div");
+  h.className="heart3d";
+  h.innerHTML="💖";
+  h.style.left=e.clientX+"px";
+  h.style.top=e.clientY+"px";
+  h.style.fontSize="20px";
+  h.style.animationDuration="3s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),3000);
+});
+
+// Surprise messages
+const surpriseMessages = [
+  "You are the brightest flower in our family 🌸",
+  "Your smile makes every day beautiful ✨",
+  "May all your dreams come true 💖",
+  "You are loved forever 💝",
+  "Stay happy and keep shining 🌟"
+];
+
+function surprise(){
+  const msg = surpriseMessages[Math.floor(Math.random()*surpriseMessages.length)];
+  document.getElementById("surpriseText").innerHTML = msg;
+  document.getElementById("surpriseBox").style.display="flex";
+}
+
+function closeSurprise(){
+  document.getElementById("surpriseBox").style.display="none";
+}
+
+// Dark Mode
+function toggleMode(){
+  document.body.classList.toggle("dark");
+}
+
+// Fireworks
+function fireworks(e){
+  for(let i=0;i<30;i++){
+    const fire=document.createElement("div");
+    fire.className="fire";
+    fire.style.left=e.clientX+"px";
+    fire.style.top=e.clientY+"px";
+    fire.style.setProperty("--x",(Math.random()*300-150)+"px");
+    fire.style.setProperty("--y",(Math.random()*300-150)+"px");
+    fire.style.background=["red","pink","yellow","purple","cyan"][Math.floor(Math.random()*5)];
+    document.body.appendChild(fire);
+    setTimeout(()=>fire.remove(),1000);
+  }
+}
+</script>
+
+</body>
+</html>
